@@ -185,7 +185,16 @@ class Minimax:
 
 
 class AI(abstractstrategy.Strategy):
-    """AI player using Minimax with alpha-beta pruning algorithm to play checkers"""
+    """ Created by Levan
+    AI is a checker playing strategy class using Minimax with alpha-beta pruning algorithm
+    to play checkers and heuristic evaluation function - utility function to evaluate current
+    state of the checkerboard"""
+
+    def __init__(self, player, game, max_plies):
+        # calls abstractstrategy.Strategy's constructor
+        super(AI, self).__init__(player, game, max_plies)
+        # instantiating a searching methodology class Minimax defined above
+        self.searching_strategy = Minimax(self.maxplayer, self.minplayer, self.maxplies, self)
 
     def play(self, board):
         """"play - Make a move
