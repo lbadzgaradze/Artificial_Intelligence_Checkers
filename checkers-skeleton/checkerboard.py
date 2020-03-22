@@ -15,7 +15,7 @@ class CheckerBoard(Board):
     and making legal moves.
     
     All references to players that are accessible externally to this
-    class should use the pawn names. //levan?
+    class should use the pawn names. //levan
     
     Note that this implementation is designed for readability, not
     efficiency.  There are many changes that could be made to
