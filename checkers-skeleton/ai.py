@@ -233,18 +233,26 @@ class AI(abstractstrategy.Strategy):
         # total utility that this method will return
         utility = 0
 
+        # index of max player
+        self.maxplayer_index = board.playeridx(self.maxplayer)
+
         # feature 1: Percentage difference of the amount of player's pawns and enemy's pawns
         # feature 2: Percentage difference of the amount of player's kings and enemy's kings
-        pawn_p_difference, king_p_difference = self.Pawn_Diff(board)
-        # w_1 - feature 1 weight
-        # w_2 - feature 2 weight
-        w_1, w_2 = 1, 1.5
+        pawn_p_difference, king_p_difference = self.Pawn_Perc_Diff(board)
 
-        utility = int(w_1 * pawn_p_difference + w_2 * king_p_difference)
+        # feature 3: the amount of pieces on the home row
+        # feature 4: the amount of enemy pieces on the enemy home row
+        home_row_count, enemy_home_row_count = self.Home_Row_Pieces(board)
+
+        # w_{i} is the weight for the ith feature
+        w_1, w_2, w_3, w_4 = 1, 1.5, 3, -3
+
+        utility = int(
+            w_1 * pawn_p_difference + w_2 * king_p_difference + w_3 * home_row_count + w_4 * enemy_home_row_count)
 
         return utility
 
-    def Pawn_Diff(self, board):
+    def Pawn_Perc_Diff(self, board):
         """Pawn_Diff returns Percentage difference of the amount of player's pawns and enemy's pawns and
         Percentage difference of the amount of player's kings and enemy's kings.
 
@@ -263,7 +271,7 @@ class AI(abstractstrategy.Strategy):
         pawns = board.get_pawnsN()
         kings = board.get_kingsN()
 
-        max_player_index = board.playeridx(self.maxplayer)
+        max_player_index = self.maxplayer_index
         min_player_index = (max_player_index + 1) % 2
 
         player_pawns = pawns[max_player_index]
@@ -275,3 +283,23 @@ class AI(abstractstrategy.Strategy):
         king_difference = int((player_kings - enemy_kings) / ((player_kings + enemy_kings) / 2.0) * 100)
 
         return pawn_difference, king_difference
+
+    def Home_Row_Pieces(self, board):
+        """Home_Row_Pieces return the amount of pieces on the home row for maxplayer and enemy.
+        Keeping pieces on the home row is a good strategy since it will prevent enemy from
+        getting their pieces kinged"""
+
+        direction = board.pawnmoves[self.maxplayer][0][0]
+        home_row, enemy_home_row = (7, 0) if direction < 0 else (0, 7)
+
+        home_row_piece_count = 0
+        for c in range(board.coloffset[home_row], board.cols, board.step):
+            if board.board[home_row][c]:
+                home_row_piece_count += 1
+
+        enemy_home_piece_count = 0
+        for c in range(board.coloffset[enemy_home_row], board.cols, board.step):
+            if board.board[enemy_home_row][c]:
+                enemy_home_piece_count += 1
+
+        return home_row_piece_count, enemy_home_piece_count
