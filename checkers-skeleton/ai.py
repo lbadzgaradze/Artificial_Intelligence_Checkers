@@ -117,8 +117,12 @@ class Minimax:
             actions = current_board_state.get_actions(self.max_player)
 
             for action in actions:
+                # this portion of the code heavily relies on algorithm outlined
+                # on Figure 5.7 on pg. 170 of our textbook. We are borrowing
+                # from the pseudocode and translating
                 resulting_child_node = current_board_state.move(action)
                 current_utility, move = self.Min_Value(resulting_child_node, alpha_, beta_, ply_counter + 1)
+                # add utility and action pair to choices
                 choices.update({current_utility: action})
                 v_maximum_utility = max(v_maximum_utility, current_utility)
 
@@ -174,8 +178,12 @@ class Minimax:
             actions = current_board_state.get_actions(self.min_player)
 
             for action in actions:
+                # this portion of the code heavily relies on algorithm outlined
+                # on Figure 5.7 on pg. 170 of our textbook. We are borrowing
+                # from the pseudocode and translating
                 resulting_child_node = current_board_state.move(action)
                 current_utility, move = self.Max_Value(resulting_child_node, _alpha, _beta, ply_counter + 1)
+                # add utility and action pair to choices
                 choices.update({current_utility: action})
                 v_minimum_utility = min(v_minimum_utility, current_utility)
                 if v_minimum_utility <= _alpha:
@@ -213,8 +221,57 @@ class AI(abstractstrategy.Strategy):
     the alpha-beta search is a separate function or class. Both must be contained within AI.py"""
 
     def utility(self, board):
-        "Return the utility of the specified board"
+        """utility is heuristic evaluation function (a weighted linear function, to be precise) - it
+        approximates utility of the given checkerboard from the MAX player's viewpoint, in other words
+        determines strength of the current checkerboard configuration relative to the MAX player.
 
-        raise NotImplementedError("Subclass must implement")
+        The following function computes several features known to be an important predictor
+        of checks game outcome. This analysis heavily relies on the article "Basic Strategies
+        for Winning at Checkers" Written by Seth Brow available here:
+        https://www.thesprucecrafts.com/how-to-win-at-checkers-411170  """
 
-# class Alpha_beta():
+        # total utility that this method will return
+        utility = 0
+
+        # feature 1: Percentage difference of the amount of player's pawns and enemy's pawns
+        # feature 2: Percentage difference of the amount of player's kings and enemy's kings
+        pawn_p_difference, king_p_difference = self.Pawn_Diff(board)
+        # w_1 - feature 1 weight
+        # w_2 - feature 2 weight
+        w_1, w_2 = 1, 1.5
+
+        utility = int(w_1 * pawn_p_difference + w_2 * king_p_difference)
+
+        return utility
+
+    def Pawn_Diff(self, board):
+        """Pawn_Diff returns Percentage difference of the amount of player's pawns and enemy's pawns and
+        Percentage difference of the amount of player's kings and enemy's kings.
+
+        Percentage difference here is calculated to equal the change in value, divided by the average of
+        the 2 numbers, all multiplied by 100. We retain + or - sign, since we want to evaluate from MAX
+        player's point of view.
+
+        The reasoning behind using percentage difference instead of the simple difference is to account
+        for the fact that advantage of number of pieces is far more important when the total amount of pieces
+        on the board is small. "With only 12 pieces on the board, to begin with, you may quickly end up with
+        an 8-7 piece advantage. This may not seem like a big deal, but if you can trade four pieces, you
+        suddenly have a 4-3 advantage, which is a tremendous amount of power." """
+
+        board.recount_pieces()  # this will probably slow it down ???
+        # the following lists contain number of pieces indexed by playerindex
+        pawns = board.get_pawnsN()
+        kings = board.get_kingsN()
+
+        max_player_index = board.playeridx(self.maxplayer)
+        min_player_index = (max_player_index + 1) % 2
+
+        player_pawns = pawns[max_player_index]
+        player_kings = kings[max_player_index]
+        enemy_pawns = pawns[min_player_index]
+        enemy_kings = kings[min_player_index]
+
+        pawn_difference = int((player_pawns - enemy_pawns) / ((player_pawns + enemy_pawns) / 2.0) * 100)
+        king_difference = int((player_kings - enemy_kings) / ((player_kings + enemy_kings) / 2.0) * 100)
+
+        return pawn_difference, king_difference

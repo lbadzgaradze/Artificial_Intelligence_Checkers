@@ -1,9 +1,9 @@
 import checkerboard
 
 def main():
-    mycheckerboard = checkerboard.CheckerBoard
+    mycheckerboard = checkerboard.CheckerBoard()
     print("testing")
-    print(mycheckerboard)
+    print(mycheckerboard.get_pawnsN())
 
 if __name__ == '__main__':
     main()
