@@ -240,15 +240,18 @@ class AI(abstractstrategy.Strategy):
         # feature 2: Percentage difference of the amount of player's kings and enemy's kings
         pawn_p_difference, king_p_difference = self.Pawn_Perc_Diff(board)
 
-        # feature 3: the amount of pieces on the home row
-        # feature 4: the amount of enemy pieces on the enemy home row
-        home_row_count, enemy_home_row_count = self.Home_Row_Pieces(board)
+        # feature 3: the difference between the amount of pieces on the home row for maxplayer
+        # and the amount of enemy pieces on the enemy home row
+        relative_home_row_count = self.Home_Row_Pieces(board)
+
+        # feature 4: difference between the amount of maxplayer and enemy pieces on the edge columns
+        relative_edge_count = self.Edge_Piece_Count(board)
 
         # w_{i} is the weight for the ith feature
-        w_1, w_2, w_3, w_4 = 1, 1.5, 3, -3
+        w_1, w_2, w_3 = 1, 1.5, 2,
 
         utility = int(
-            w_1 * pawn_p_difference + w_2 * king_p_difference + w_3 * home_row_count + w_4 * enemy_home_row_count)
+            w_1 * pawn_p_difference + w_2 * king_p_difference + w_3 * relative_home_row_count)
 
         return utility
 
@@ -285,9 +288,9 @@ class AI(abstractstrategy.Strategy):
         return pawn_difference, king_difference
 
     def Home_Row_Pieces(self, board):
-        """Home_Row_Pieces return the amount of pieces on the home row for maxplayer and enemy.
-        Keeping pieces on the home row is a good strategy since it will prevent enemy from
-        getting their pieces kinged"""
+        """Home_Row_Pieces return the difference between the amount of pieces on the home
+        row for maxplayer and enemy. Keeping pieces on the home row is a good strategy since
+        it will prevent enemy from getting their pieces kinged"""
 
         direction = board.pawnmoves[self.maxplayer][0][0]
         home_row, enemy_home_row = (7, 0) if direction < 0 else (0, 7)
@@ -302,4 +305,15 @@ class AI(abstractstrategy.Strategy):
             if board.board[enemy_home_row][c]:
                 enemy_home_piece_count += 1
 
-        return home_row_piece_count, enemy_home_piece_count
+        return home_row_piece_count - enemy_home_piece_count
+
+    def Edge_Piece_Count(self, board):
+        """Edge_Piece_Count returns the difference between the amount of maxplayer and enemy pieces on the edge
+        columns.
+        "For beginners, the first strategy one often figures out is to place your checkers on the edge of
+        the board. This seems like a reasonable Checkers strategy because your pieces on the edge cannot be captured.
+        But as it turns out, while this may be a tempting strategy in your first games, pushing your checkers to the
+        edges is a mistake." """
+        pieces_on_edge = 0
+        #STOPPED HERE
+
