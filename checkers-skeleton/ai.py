@@ -5,7 +5,7 @@ import checkerboard
 class Minimax:
     """The Minimax class uses minimax algorithm for determining the best move for the AI player in checkers. Generic
     minimax algorithm is enhanced with alpha beta pruning (which does not change the decision of the minimax
-    algorithm) and utility function is replaced by heuristic evaluation function (approximation) at the the specified
+    algorithm) and utility function is replaced by heuristic evaluation function (approximation) at the specified
     cutoff (we call this parameter max_plies). We use utility and heuristic evaluation function interchangeably in
     this code. """
 
