@@ -5,7 +5,7 @@ import checkerboard
 class Minimax:
     """The Minimax class uses minimax algorithm for determining the best move for the AI player in checkers. Generic
     minimax algorithm is enhanced with alpha beta pruning (which does not change the decision of the minimax
-    algorithm) and utility function is replaced by heuristic evaluation function (approximation) at the the specified
+    algorithm) and utility function is replaced by heuristic evaluation function (approximation) at the specified
     cutoff (we call this parameter max_plies). We use utility and heuristic evaluation function interchangeably in
     this code. """
 
@@ -202,7 +202,7 @@ class AI(abstractstrategy.Strategy):
         determines strength of the current checkerboard configuration relative to the MAX player.
 
         The following function computes several features known to be an important predictor
-        of checks game outcome. This analysis heavily relies on the article "Basic Strategies
+        of checkers game outcome. This analysis heavily relies on the article "Basic Strategies
         for Winning at Checkers" Written by Seth Brow available here:
         https://www.thesprucecrafts.com/how-to-win-at-checkers-411170  """
 
@@ -217,7 +217,7 @@ class AI(abstractstrategy.Strategy):
         # enemy pieces on the enemy home row
         relative_home_row_count = self.Home_Row_Pieces(board)
 
-        # feature 4: how close are the pawns to getting kinged relative to enemy
+        # feature 4: how close are the pawns to becoming the king relative to enemy
         relative_getting_kinged = self.Distance_From_Kinged(board)
 
         # w_{i} is the weight for the ith feature weights here are simply chosen based on our intuition. Machine
@@ -364,7 +364,7 @@ class AI(abstractstrategy.Strategy):
         "For beginners, the first strategy one often figures out is to place your checkers on the edge of
         the board. This seems like a reasonable Checkers strategy because your pieces on the edge cannot be captured.
         But as it turns out, while this may be a tempting strategy in your first games, pushing your checkers to the
-        edges is a mistake." """
+        edges is a mistake as it limits the moves you can make." """
         pieces_on_edge = 0
         # STOPPED HERE
         raise Exception("Not implemented yet")
