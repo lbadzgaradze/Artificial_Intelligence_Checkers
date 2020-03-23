@@ -1,7 +1,14 @@
+import unittest
 from unittest import TestCase
 
+import checkerboard
 
-class TestCheckerBoard(TestCase):
+
+class TestCheckerBoard(unittest.TestCase):
     def test_clearboard(self):
         self.assertTrue(True == True)
-        self.fail()
+        self.assertEqual(14, 14)
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -248,7 +248,7 @@ class AI(abstractstrategy.Strategy):
         relative_edge_count = self.Edge_Piece_Count(board)
 
         # w_{i} is the weight for the ith feature
-        w_1, w_2, w_3 = 1, 1.5, 2,
+        w_1, w_2, w_3 = 1, 2, 5
 
         utility = int(
             w_1 * pawn_p_difference + w_2 * king_p_difference + w_3 * relative_home_row_count)
@@ -270,6 +270,7 @@ class AI(abstractstrategy.Strategy):
         suddenly have a 4-3 advantage, which is a tremendous amount of power." """
 
         board.recount_pieces()  # this will probably slow it down ???
+        self.maxplayer_index = board.playeridx(self.maxplayer)
         # the following lists contain number of pieces indexed by playerindex
         pawns = board.get_pawnsN()
         kings = board.get_kingsN()
@@ -282,8 +283,10 @@ class AI(abstractstrategy.Strategy):
         enemy_pawns = pawns[min_player_index]
         enemy_kings = kings[min_player_index]
 
-        pawn_difference = int((player_pawns - enemy_pawns) / ((player_pawns + enemy_pawns) / 2.0) * 100)
-        king_difference = int((player_kings - enemy_kings) / ((player_kings + enemy_kings) / 2.0) * 100)
+        pawn_difference = int((player_pawns - enemy_pawns) / (
+                    (player_pawns + enemy_pawns) / 2.0) * 100) if player_pawns + enemy_pawns > 0 else 0
+        king_difference = int((player_kings - enemy_kings) / (
+                (player_kings + enemy_kings) / 2.0) * 100) if player_kings + enemy_kings > 0 else 0
 
         return pawn_difference, king_difference
 
@@ -291,18 +294,23 @@ class AI(abstractstrategy.Strategy):
         """Home_Row_Pieces return the difference between the amount of pieces on the home
         row for maxplayer and enemy. Keeping pieces on the home row is a good strategy since
         it will prevent enemy from getting their pieces kinged"""
+        self.maxplayer_index = board.playeridx(self.maxplayer)
 
         direction = board.pawnmoves[self.maxplayer][0][0]
         home_row, enemy_home_row = (7, 0) if direction < 0 else (0, 7)
 
         home_row_piece_count = 0
         for c in range(board.coloffset[home_row], board.cols, board.step):
-            if board.board[home_row][c]:
+            # there is a piece and piece belongs to the "home owner"
+            if board.board[home_row][c] and \
+                    board.board[home_row][c] in board.players[self.maxplayer_index]:
                 home_row_piece_count += 1
 
         enemy_home_piece_count = 0
         for c in range(board.coloffset[enemy_home_row], board.cols, board.step):
-            if board.board[enemy_home_row][c]:
+            # there is a piece and piece belongs to the enemy
+            if board.board[enemy_home_row][c] and \
+                    board.board[enemy_home_row][c] in board.players[(self.maxplayer_index + 1) % 2]:
                 enemy_home_piece_count += 1
 
         return home_row_piece_count - enemy_home_piece_count
@@ -315,5 +323,4 @@ class AI(abstractstrategy.Strategy):
         But as it turns out, while this may be a tempting strategy in your first games, pushing your checkers to the
         edges is a mistake." """
         pieces_on_edge = 0
-        #STOPPED HERE
-
+        # STOPPED HERE
