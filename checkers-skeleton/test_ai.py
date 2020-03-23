@@ -92,7 +92,8 @@ class TestAI(unittest.TestCase):
         #    5  .     .     .     .
         #    6     .     .     .     R
         #    7  .     .     .     .
-
+        self.boards = [self.Pristine, self.SingleHopsRed, self.SingleHopsBlack, self.multihop,
+                       self.KingBlack, self.BlackKingTour, self.RedKingTour, self.EndGame1]
         self.my_checkerboard = checkerboard.CheckerBoard()
         self.my_ai_red = ai.AI('r', self.my_checkerboard, 10)
         self.my_ai_black = ai.AI('b', self.my_checkerboard, 10)
@@ -173,7 +174,8 @@ class TestAI(unittest.TestCase):
         self.assertEqual(black_king, -red_king_expected)
 
     def test_home_row_pieaces(self):
-        for board in [self.Pristine, self.SingleHopsRed, self.SingleHopsBlack, self.KingBlack, self.BlackKingTour, self.RedKingTour]:
+        for board in [self.Pristine, self.SingleHopsRed, self.SingleHopsBlack, self.KingBlack, self.BlackKingTour,
+                      self.RedKingTour]:
             difference_red = self.my_ai_red.Home_Row_Pieces(board)
             difference_black = self.my_ai_black.Home_Row_Pieces(board)
             expected_red = 0
@@ -194,6 +196,39 @@ class TestAI(unittest.TestCase):
         self.assertEqual(difference_red, expected_red)
         self.assertEqual(difference_black, -expected_red)
 
+    """def test_utility(self):
+        expected = {}
+        expected.update({self.Pristine: 0})
+        expected.update({self.SingleHopsRed: 0})
+        expected.update({self.SingleHopsBlack: 8})
+        expected.update({self.multihop: 0})
+        expected.update({self.KingBlack: 120})
+        expected.update({self.BlackKingTour: -200})
+        expected.update({self.RedKingTour: 200})
+        expected.update({self.EndGame1: 195})
+
+        result_utilites_red = {}
+        result_utilites_black = {}
+
+        for board in self.boards:
+            result_utilites_red.update({board: self.my_ai_red.utility(board)})
+            result_utilites_black.update({board: self.my_ai_black.utility(board)})
+            self.assertEqual(result_utilites_red[board], expected[board])
+            self.assertEqual(result_utilites_black[board], -expected[board])
+
+        # for key, value in result_utilites.items():
+        #     print(key)
+        #     print("\n")
+        #     print(value)
+        #     print("---------------------")"""
+
+    def test_distance_from_kinged(self):
+        for board in self.boards:
+            print(board)
+            print("red", end=" ")
+            print(self.my_ai_red.Distance_From_Kinged(board))
+            print("black", end=" ")
+            print(self.my_ai_black.Distance_From_Kinged(board))
 
 
 if __name__ == '__main__':
