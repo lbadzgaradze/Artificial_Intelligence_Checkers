@@ -98,6 +98,8 @@ class TestAI(unittest.TestCase):
         self.my_ai_red = ai.AI('r', self.my_checkerboard, 10)
         self.my_ai_black = ai.AI('b', self.my_checkerboard, 10)
 
+        self.minimax = ai.Minimax('r', 'b', 10, self.my_ai_red)
+
     def tearDown(self):
         pass
 
@@ -222,6 +224,11 @@ class TestAI(unittest.TestCase):
         #     print(value)
         #     print("---------------------")"""
 
+    def test_alpha_beta_search(self):
+        print("testing minimax:")
+        for board in self.boards:
+            print(self.minimax.Alpha_Beta_Search(board))
+
     def test_distance_from_kinged(self):
         for board in self.boards:
             print(board)
@@ -229,6 +236,7 @@ class TestAI(unittest.TestCase):
             print(self.my_ai_red.Distance_From_Kinged(board))
             print("black", end=" ")
             print(self.my_ai_black.Distance_From_Kinged(board))
+
 
 
 if __name__ == '__main__':

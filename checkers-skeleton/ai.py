@@ -84,10 +84,10 @@ class Minimax:
         (game_over, winner) = current_board_state.is_terminal()
         if game_over:
             # return actual utility
-            return self.Game_Over_Utility(winner)
+            return self.Game_Over_Utility(winner), None
         elif self.Cut_Off_Test(ply_counter):
             # return approximation of the utility
-            return self.strategy(current_board_state)
+            return self.strategy(current_board_state), None
         else:
             # go deeper down the search tree
 
@@ -105,9 +105,8 @@ class Minimax:
             actions = current_board_state.get_actions(self.max_player)
 
             for action in actions:
-                # this portion of the code heavily relies on algorithm outlined
-                # on Figure 5.7 on pg. 170 of our textbook. We are borrowing
-                # from the pseudocode and translating
+                # this portion of the code heavily relies on algorithm outlined on Figure 5.7 on pg. 170 of our
+                # textbook. We are borrowing from the pseudocode and translating
                 resulting_child_node = current_board_state.move(action)
                 current_utility, move = self.Min_Value(resulting_child_node, alpha_, beta_, ply_counter + 1)
                 # add utility and action pair to choices
@@ -139,10 +138,10 @@ class Minimax:
         (game_over, winner) = current_board_state.is_terminal()
         if game_over:
             # return actual utility
-            return self.Game_Over_Utility(winner)
+            return self.Game_Over_Utility(winner), None
         elif self.Cut_Off_Test(ply_counter):
             # return approximation of the utility
-            return self.strategy(current_board_state)
+            return self.strategy.utility(current_board_state), None
         else:
             # go deeper down the search tree
 
