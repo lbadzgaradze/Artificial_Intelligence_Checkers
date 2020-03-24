@@ -95,10 +95,11 @@ class TestAI(unittest.TestCase):
         self.boards = [self.Pristine, self.SingleHopsRed, self.SingleHopsBlack, self.multihop,
                        self.KingBlack, self.BlackKingTour, self.RedKingTour, self.EndGame1]
         self.my_checkerboard = checkerboard.CheckerBoard()
-        self.my_ai_red = ai.AI('r', self.my_checkerboard, 10)
-        self.my_ai_black = ai.AI('b', self.my_checkerboard, 10)
+        self.my_ai_red = ai.AI('r', checkerboard.CheckerBoard, 10)
+        self.my_ai_black = ai.AI('b', checkerboard.CheckerBoard, 10)
 
-        self.minimax = ai.Minimax('r', 'b', 10, self.my_ai_red)
+        self.minimax_red = ai.Minimax('r', 'b', 10, self.my_ai_red)
+        self.minimax_black = ai.Minimax('b', 'r', 10, self.my_ai_red)
 
     def tearDown(self):
         pass
@@ -225,9 +226,14 @@ class TestAI(unittest.TestCase):
         #     print("---------------------")"""
 
     def test_alpha_beta_search(self):
-        print("testing minimax:")
+        print("testing minimax for red player:")
         for board in self.boards:
-            print(self.minimax.Alpha_Beta_Search(board))
+            print(board)
+            print(self.minimax_red.Alpha_Beta_Search(board))
+        print("testing minimax for black player:")
+        for board in self.boards:
+            print(board)
+            print(self.minimax_black.Alpha_Beta_Search(board))
 
     def test_distance_from_kinged(self):
         for board in self.boards:

@@ -116,7 +116,7 @@ class Minimax:
                 if v_maximum_utility >= beta_:
                     return v_maximum_utility, action
                 alpha_ = max(alpha_, v_maximum_utility)
-            return v_maximum_utility, choices[v_maximum_utility]
+            return v_maximum_utility, choices.get(v_maximum_utility)
 
     def Min_Value(self, current_board_state, alpha, beta, ply_counter):
         """This method returns the utility value of the best action from the Min player's point of view, the worst
@@ -171,7 +171,7 @@ class Minimax:
                 if v_minimum_utility <= _alpha:
                     return v_minimum_utility, action
                 _beta = min(_beta, v_minimum_utility)
-            return v_minimum_utility, choices[v_minimum_utility]
+            return v_minimum_utility, choices.get(v_minimum_utility)
 
 
 class AI(abstractstrategy.Strategy):
@@ -189,7 +189,7 @@ class AI(abstractstrategy.Strategy):
         """"play - Make a move. Given a board, play returns (newboard, action) where newboard is the result of having
         applied action to board and action is determined via a game tree search (e.g. minimax with alpha-beta pruning).
         """
-        print("Alpha Beta Search In progress...")
+        print("Levan's AI player's alpha beta search In progress...")
         # find a best move using alpha-beta pruning
         best_move = self.searching_strategy.Alpha_Beta_Search(board)
         # if move exists, move
@@ -222,7 +222,7 @@ class AI(abstractstrategy.Strategy):
 
         # w_{i} is the weight for the ith feature weights here are simply chosen based on our intuition. Machine
         # learning would be the best way to determine these weights
-        w_1, w_2, w_3, w_4 = 1, 2, 5, 5
+        w_1, w_2, w_3, w_4 = 2, 3, 5, 5
 
         utility = int(
             w_1 * pawn_p_difference + w_2 * king_p_difference + w_3 * relative_home_row_count + w_4 * relative_getting_kinged)
@@ -324,7 +324,7 @@ class AI(abstractstrategy.Strategy):
         # testing purposes only
         self.maxplayer_index = board.playeridx(self.maxplayer)
 
-        maxolayer_total = 0
+        max_player_total = 0
         enemy_total = 0
 
         # for each existing piece on the board
@@ -336,10 +336,10 @@ class AI(abstractstrategy.Strategy):
                 # count distances using disttoking() method provided in checkerboard.py
                 distance_to_kinged = board.disttoking(board.pawns[player_index], row)
                 if player_index == self.maxplayer_index:
-                    maxolayer_total += distance_to_kinged
+                    max_player_total += distance_to_kinged
                 else:
                     enemy_total += distance_to_kinged
-        return enemy_total - maxolayer_total
+        return enemy_total - max_player_total
 
 
 

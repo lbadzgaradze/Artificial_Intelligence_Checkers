@@ -20,6 +20,7 @@ import checkerboard
 # and 3.8.  If you're not using one of these, it won't work.
 import imp
 import sys
+import ai
 major = sys.version_info[0]
 minor = sys.version_info[1]
 modpath = "__pycache__/tonto.cpython-{}{}.pyc".format(major, minor)
@@ -44,27 +45,40 @@ def Game(red=human.Strategy, black=tonto.Strategy,
     verbose - Show messages (default True)
     firstmove - Player N starts 0 (red) or 1 (black).  Default 0. 
     """
+    my_board = checkerboard.CheckerBoard() if (init is None) else init
 
-    # Don't forget to create instances of your strategy,
-    # e.g. black('b', checkerboard.CheckerBoard, maxplies)
+    print("Initial state of the board:")
+    print(my_board)
 
-    raise NotImplemented
+    red_player = red('r', checkerboard.CheckerBoard, maxplies)
+    print(black)
+    black_player = black.Strategy('b', checkerboard.CheckerBoard, maxplies)
+
+    players = (red_player, black_player)
+    i = 1
+    game_over = False
+    winner = None
+    print("Game begins now!")
+    current_board = my_board
+    while not game_over:
+        i += 1
+        new_board, best_move = players[i % 2].play(current_board)
+        print(new_board)
+        print(best_move)
+        (game_over, winner) = new_board.is_terminal()
+        current_board = new_board
+
+    # Output statement for the winner declarations
+    if winner in ['r', 'R']:
+        print("The winner is RED player")
+    elif winner in ['b', 'B']:
+        print("The winner is BLACK player")
+    else:
+        print("The game ended in a draw")
     
             
 if __name__ == "__main__":
     #Game(init=boardlibrary.boards["multihop"])
     #Game(init=boardlibrary.boards["StrategyTest1"])
     #Game(init=boardlibrary.boards["EndGame1"], firstmove = 1)
-    Game()
-        
-        
-        
-
-
-        
-                    
-            
-        
-
-    
-    
+    Game(ai.AI, tonto, 10)
