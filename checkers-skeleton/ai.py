@@ -64,7 +64,7 @@ class Minimax:
         maximum_utility, best_move = self.Max_Value(current_board_state, alpha, beta, ply_counter)
         return best_move
 
-    def Max_Value(self, current_board_state, alpha, beta, ply_counter): # when does this return None ???
+    def Max_Value(self, current_board_state, alpha, beta, ply_counter):  # when does this return None ???
         """This method returns the utility value of the best action from the Max player's point of view and the
         action leading to that utility value
 
@@ -220,12 +220,20 @@ class AI(abstractstrategy.Strategy):
         # feature 4: how close are the pawns to becoming the king relative to enemy
         relative_getting_kinged = self.Distance_From_Kinged(board)
 
+        # feature 5: difference between the amount of MAX player (this is bad for MAX player) and enemy pieces on the
+        # edge columns (this is good for MAX player)
+        relative_edge_count = self.Edge_Piece_Count(board)
+
         # w_{i} is the weight for the ith feature weights here are simply chosen based on our intuition. Machine
         # learning would be the best way to determine these weights
-        w_1, w_2, w_3, w_4 = 2, 3, 5, 5
+        w_1, w_2, w_3, w_4, w_5 = 2, 3, 5, 5, 2
 
         utility = int(
-            w_1 * pawn_p_difference + w_2 * king_p_difference + w_3 * relative_home_row_count + w_4 * relative_getting_kinged)
+            w_1 * pawn_p_difference +
+            w_2 * king_p_difference +
+            w_3 * relative_home_row_count +
+            w_4 * relative_getting_kinged +
+            w_5 * relative_edge_count)
 
         return utility if (utility is not None) else 0
 
@@ -341,30 +349,34 @@ class AI(abstractstrategy.Strategy):
                     enemy_total += distance_to_kinged
         return enemy_total - max_player_total
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # feature 5: difference between the amount of maxplayer and enemy pieces on the edge columns
-    # relative_edge_count = self.Edge_Piece_Count(board)
-
     def Edge_Piece_Count(self, board):
         """Edge_Piece_Count returns the difference between the amount of maxplayer and enemy pieces on the edge
         columns.
-        "For beginners, the first strategy one often figures out is to place your checkers on the edge of
+        reasoning: "For beginners, the first strategy one often figures out is to place your checkers on the edge of
         the board. This seems like a reasonable Checkers strategy because your pieces on the edge cannot be captured.
         But as it turns out, while this may be a tempting strategy in your first games, pushing your checkers to the
         edges is a mistake as it limits the moves you can make." """
-        pieces_on_edge = 0
-        # STOPPED HERE
-        raise Exception("Not implemented yet")
+
+        # this does not need to be recomputed every time (just once in Utility function), it is recomputed here for
+        # testing purposes only
+        self.maxplayer_index = board.playeridx(self.maxplayer)
+
+        max_player_pieces_on_edge = 0
+        enemy_pieces_on_edge = 0
+
+        for r in range(1, 7, 2):  # exclude home rows
+            if board.board[r][0]:
+                if board.board[r][0] in board.players[self.maxplayer_index]:  # if piece is MAX player's
+                    max_player_pieces_on_edge += 1
+                else:
+                    enemy_pieces_on_edge += 1
+
+        for r in range(2, 7, 2):  # exclude home rows
+            if board.board[r][7]:
+                if board.board[r][7] in board.players[self.maxplayer_index]:  # if piece is MAX player's
+                    max_player_pieces_on_edge += 1
+                else:
+                    enemy_pieces_on_edge += 1
+
+
+        return enemy_pieces_on_edge - max_player_pieces_on_edge

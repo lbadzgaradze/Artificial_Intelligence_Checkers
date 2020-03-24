@@ -199,6 +199,15 @@ class TestAI(unittest.TestCase):
         self.assertEqual(difference_red, expected_red)
         self.assertEqual(difference_black, -expected_red)
 
+    def test_edge_piece_count(self):
+        for board in self.boards:
+            print(board)
+            print("red")
+            print(self.my_ai_red.Edge_Piece_Count(board))
+            print("black")
+            print(self.my_ai_black.Edge_Piece_Count(board))
+        return
+
     """def test_utility(self):
         expected = {}
         expected.update({self.Pristine: 0})
